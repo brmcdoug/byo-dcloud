@@ -10,8 +10,8 @@ Table of Contents
   - [Install Containerlab](#install-containerlab)
   - [XRd image](#xrd-image)
   - [topology yaml](#topology-yaml)
-  - [srv6 config](#srv6-config)
-  - [launch topology](#launch-topology)
+  - [Accessing routers](#accessing-routers)
+  - [Appendix](#appendix)
 
 ## SRv6 overview
 A brief PPT deck
@@ -133,21 +133,36 @@ ios-xr/xrd-control-plane   24.2.2    a931f15c0a0d   2 months ago   1.28GB
 dcloud@server:~$ 
 ```
 
-5. Increase the kernel pid parameter:
+5. XRd requires us to tune a couple sysctl parameters. Use either vi or nano to edit /etc/sysctl.conf:
 
 ```
-sudo sysctl -w kernel.pid_max=1048576
+sudo nano /etc/sysctl.conf
 ```
 
-Setting the parameter via CLI is only temporary. To make the change permanent, add the following line to /etc/sysctl.conf:
+Add the following lines to the end of the file:
 
 ```
+net.bridge.bridge-nf-call-iptables=0
+net.bridge.bridge-nf-call-ip6tables=0
+fs.inotify.max_user_instances=65536
+fs.inotify.max_user_watches=65536
 kernel.pid_max=1048576
 ```
 Then issue the following command to apply the change:
 
 ```
 sudo sysctl -p
+```
+
+Example output:
+```
+dcloud@server:~/byo-dcloud$ sudo sysctl -p
+net.bridge.bridge-nf-call-iptables = 0
+net.bridge.bridge-nf-call-ip6tables = 0
+fs.inotify.max_user_instances = 65536
+fs.inotify.max_user_watches = 65536
+kernel.pid_max = 1048576
+dcloud@server:~/byo-dcloud$
 ```
 
 ## topology yaml
@@ -170,6 +185,130 @@ Feel free to review the configs in the [xrd-config](xrd-config) folder
 cd byo-dcloud/util
 ./host-check
 ```
+We can ignore the cgroups and Hugepages errors. One interesting portion of the output is the number of XRd CP nodes the script estimates we can run on the VM:
 
-## srv6 config
-## launch topology
+```
+xrd checks
+-----------------------
+PASS -- RAM
+        Available RAM is 30.3 GiB.
+        This is estimated to be sufficient for 15 XRd instance(s), although memory
+        usage depends on the running configuration.
+        Note that any swap that may be available is not included.
+```
+
+3. Launch the topology:
+
+```
+cd byo-dcloud
+sudo clab deploy -t topology.yaml
+```
+
+Example output:
+```
+dcloud@server:~/byo-dcloud$ sudo clab deploy -t topology.yaml 
+INFO[0000] Containerlab v0.60.0 started                 
+INFO[0000] Parsing & checking topology file: topology.yaml 
+INFO[0000] Creating docker network: Name="mgt", IPv4Subnet="172.20.2.0/24", IPv6Subnet="", MTU=0 
+INFO[0000] Creating lab directory: /home/dcloud/byo-dcloud/clab-topo 
+INFO[0000] Creating container: "xrd05"                  
+INFO[0000] Creating container: "xrd03"                  
+INFO[0000] Creating container: "xrd07"                  
+INFO[0000] Creating container: "xrd02"                  
+INFO[0000] Creating container: "xrd01"                  
+INFO[0000] Creating container: "xrd06"                  
+INFO[0000] Creating container: "xrd04"                  
+INFO[0001] Created link: xrd01:Gi0-0-0-1 <--> xrd02:Gi0-0-0-0 
+INFO[0001] Running postdeploy actions for Cisco XRd 'xrd02' node 
+INFO[0001] Created link: xrd01:Gi0-0-0-2 <--> xrd05:Gi0-0-0-0 
+INFO[0001] Running postdeploy actions for Cisco XRd 'xrd01' node 
+INFO[0001] Created link: xrd02:Gi0-0-0-2 <--> xrd06:Gi0-0-0-1 
+INFO[0002] Created link: xrd02:Gi0-0-0-1 <--> xrd03:Gi0-0-0-0 
+INFO[0002] Created link: xrd05:Gi0-0-0-1 <--> xrd04:Gi0-0-0-2 
+INFO[0002] Running postdeploy actions for Cisco XRd 'xrd04' node 
+INFO[0002] Created link: xrd04:Gi0-0-0-1 <--> xrd07:Gi0-0-0-1 
+INFO[0002] Created link: xrd03:Gi0-0-0-1 <--> xrd04:Gi0-0-0-0 
+INFO[0002] Running postdeploy actions for Cisco XRd 'xrd03' node 
+INFO[0003] Created link: xrd05:Gi0-0-0-2 <--> xrd06:Gi0-0-0-2 
+INFO[0003] Running postdeploy actions for Cisco XRd 'xrd05' node 
+INFO[0003] Running postdeploy actions for Cisco XRd 'xrd06' node 
+INFO[0003] Created link: xrd06:Gi0-0-0-0 <--> xrd07:Gi0-0-0-2 
+INFO[0003] Running postdeploy actions for Cisco XRd 'xrd07' node 
+INFO[0003] Adding containerlab host entries to /etc/hosts file 
+INFO[0003] Adding ssh config for containerlab nodes     
+╭─────────────────┬─────────────────────────────────┬─────────┬────────────────╮
+│       Name      │            Kind/Image           │  State  │ IPv4/6 Address │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd01 │ cisco_xrd                       │ running │ 172.20.2.201   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd02 │ cisco_xrd                       │ running │ 172.20.2.202   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd03 │ cisco_xrd                       │ running │ 172.20.2.203   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd04 │ cisco_xrd                       │ running │ 172.20.2.204   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd05 │ cisco_xrd                       │ running │ 172.20.2.205   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd06 │ cisco_xrd                       │ running │ 172.20.2.206   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+├─────────────────┼─────────────────────────────────┼─────────┼────────────────┤
+│ clab-topo-xrd07 │ cisco_xrd                       │ running │ 172.20.2.207   │
+│                 │ ios-xr/xrd-control-plane:24.2.2 │         │ N/A            │
+╰─────────────────┴─────────────────────────────────┴─────────┴────────────────╯
+dcloud@server:~/byo-dcloud$ 
+```
+
+It generally takes about 2 minutes for the XRd nodes to come up and be available.
+To check their uptime run docker ps:
+
+```
+docker ps
+```
+
+Example output:
+```
+dcloud@server:~/byo-dcloud$ docker ps
+CONTAINER ID   IMAGE                             COMMAND            CREATED         STATUS         PORTS     NAMES
+1c3996f5f431   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd06
+f6d3279cef2e   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd04
+edae330f6f5c   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd02
+b32c34773680   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd01
+9cb57e355217   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd05
+ae29c068b7b9   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd07
+6933f747536b   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ago   Up 2 minutes             clab-topo-xrd03
+dcloud@server:~/byo-dcloud$ 
+```
+
+## Accessing routers
+
+1. Containerlab creates host entries in /etc/hosts for each node in the topology. We can use these to ssh into the routers:
+
+```
+ssh cisco@clab-topo-xrd01
+or
+ssh cisco@172.20.2.201
+```
+Password is cisco123
+
+2. From xrd01, validate the network is working as expected:
+
+```
+show isis database
+show bgp summary
+show segment-routing srv6 sid
+```
+
+## Appendix
+
+Containerlab commands:
+```
+sudo clab -h
+sudo clab deploy -t <topology yaml file>
+sudo clab destroy -t <topology yaml file>
+```
+
