@@ -70,7 +70,8 @@ topology:
   links:
     - endpoints: ["xrd01:Gi0-0-0-0", "xrd02:Gi0-0-0-0"]
     - endpoints: ["xrd01:Gi0-0-0-1", "xrd05:Gi0-0-0-0"]
-    - endpoints: ["xrd01:Gi0-0-0-2", "carrots01:eth0"]
+    - endpoints: ["xrd01:Gi0-0-0-2", "carrots01:eth1"]
+
     - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
     - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
 
@@ -82,4 +83,5 @@ topology:
     - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
 
     - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-1"]
-    - endpoints: ["xrd07:Gi0-0-0-2", "carrots02:eth0"]
+    
+    - endpoints: ["xrd07:Gi0-0-0-2", "carrots02:eth1"]
