@@ -1,11 +1,11 @@
 #
 #     7-node Topology
 #
-#     r2--r3--r4
-#    /  \   /   \
-#   r1    X     r7
-#    \   / \    /
-#     \_r5__r6_/
+#                  r2--r3--r4
+#                 /  \   /   \
+#   carrots01 -- r1    X     r7 -- carrots02
+#                 \   / \   /
+#                  r5----r6
 
 name: topo
 
@@ -83,5 +83,5 @@ topology:
     - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
 
     - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-1"]
-    
+
     - endpoints: ["xrd07:Gi0-0-0-2", "carrots02:eth1"]
