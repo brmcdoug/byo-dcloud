@@ -295,7 +295,7 @@ ssh cisco@172.20.2.201
 ```
 Password is cisco123
 
-2. From xrd01, validate the network is working as expected:
+2. From xrd01 (or really any node), validate the network is working as expected:
 
 ```
 show isis database
