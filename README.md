@@ -133,7 +133,7 @@ ios-xr/xrd-control-plane   24.2.2    a931f15c0a0d   2 months ago   1.28GB
 dcloud@server:~$ 
 ```
 
-5. Next we'll increase kernel pid parameter:
+5. Increase the kernel pid parameter:
 
 ```
 sudo sysctl -w kernel.pid_max=1048576
@@ -150,7 +150,26 @@ Then issue the following command to apply the change:
 sudo sysctl -p
 ```
 
-
 ## topology yaml
+Containerlab uses a yaml file to define the topology, and it is enormously flexible.
+My today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
+
+In the yaml file, we define the topology name, mgt network, nodes, images, path to config file, and links in the network.
+
+1. git clone this repo to your VM:
+
+```
+git clone https://github.com/brmcdoug/byo-dcloud.git
+```
+
+Feel free to review the configs in the [xrd-config](xrd-config) folder
+
+2. Before we launch the topology, let's run the host-check script to verify our host will support the topology:
+
+```
+cd byo-dcloud/util
+./host-check
+```
+
 ## srv6 config
 ## launch topology

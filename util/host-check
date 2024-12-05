@@ -1046,57 +1046,6 @@ def check_supports_d_type() -> CheckFuncReturn:
     return None
 
 
-# -------------------------------------
-# XR compose checks
-# -------------------------------------
-
-
-def check_docker_compose() -> CheckFuncReturn:
-    """Check that the docker-compose version is 1.18.x or higher."""
-    cmd = "docker-compose --version"
-    try:
-        version_str = run_cmd(shlex.split(cmd))[0].strip()
-    except (FileNotFoundError, subprocess.SubprocessError):
-        return (
-            CheckState.FAILED,
-            f"Docker Compose not found (checked with {cmd!r}).\n"
-            f"Launching XRd topologies with xr-compose requires docker-compose.\n"
-            f"See installation instructions at https://docs.docker.com/compose/install/.",
-        )
-
-    version_match = re.match(
-        r"docker-compose version (\d+\.\d+(?:\.\d+)?)", version_str
-    )
-    if not version_match:
-        return (
-            CheckState.WARNING,
-            "Unable to parse Docker Compose version, at least version 1.18 is required.",
-        )
-    version = version_match.group(1)
-    version_tuple = tuple(int(x) for x in version.split("."))
-
-    if version_tuple < (1, 18):
-        return (
-            CheckState.FAILED,
-            f"Docker Compose version must be at least 1.18, current version is {version}.\n"
-            f"See installation instructions at https://docs.docker.com/compose/install/.",
-        )
-
-    return CheckState.SUCCESS, f"version {version}"
-
-
-def check_pyyaml_installed() -> CheckFuncReturn:
-    """Check that the pyyaml package is installed for use by xr-compose."""
-    try:
-        import yaml  # pylint: disable=unused-import
-    except ImportError:
-        return (
-            CheckState.FAILED,
-            "PyYAML Python package not installed - required for running xr-compose.\n"
-            "Install with 'python3 -m pip install pyyaml'.",
-        )
-    return CheckState.SUCCESS, "installed"
-
 
 def check_bridge_iptables() -> CheckFuncReturn:
     """Check that bridge-nf-call-iptables are disabled."""
@@ -1181,12 +1130,6 @@ DOCKER_CHECKS = [
     Check("Docker client", check_docker_client, []),
     Check("Docker daemon", check_docker_daemon, ["Docker client"]),
     Check("Docker supports d_type", check_supports_d_type, ["Docker daemon"]),
-]
-
-XR_COMPOSE_CHECKS = [
-    Check("docker-compose", check_docker_compose, []),
-    Check("PyYAML", check_pyyaml_installed, []),
-    Check("Bridge iptables", check_bridge_iptables, []),
 ]
 
 PLATFORM_CHECKS_MAP: Mapping[str, List[Check]] = {
