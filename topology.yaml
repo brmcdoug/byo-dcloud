@@ -1,0 +1,74 @@
+#
+#     7-node Topology
+#
+#     r2--r3--r4
+#    /  \   /   \
+#   r1    X     r7
+#    \   / \    /
+#     \_r5__r6_/
+
+name: topo
+
+mgmt:
+  network: mgt
+  ipv4-subnet: 172.20.2.0/24
+
+topology:
+  nodes:
+    xrd01:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.201
+      startup-config: xrd-config/xrd01.cfg
+
+    xrd02:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.202
+      startup-config: xrd-config/xrd02.cfg
+
+    xrd03:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2  
+      mgmt-ipv4: 172.20.2.203
+      startup-config: xrd-config/xrd03.cfg
+
+    xrd04:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.204
+      startup-config: xrd-config/xrd04.cfg
+
+    xrd05:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.205
+      startup-config: xrd-config/xrd05.cfg
+
+    xrd06:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.206
+      startup-config: xrd-config/xrd06.cfg
+
+    xrd07:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.2.2
+      mgmt-ipv4: 172.20.2.207
+      startup-config: xrd-config/xrd07.cfg
+
+  links:
+    - endpoints: ["xrd01:Gi0-0-0-1", "xrd02:Gi0-0-0-0"]
+    - endpoints: ["xrd01:Gi0-0-0-2", "xrd05:Gi0-0-0-0"]
+
+    - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
+    - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
+
+    - endpoints: ["xrd03:Gi0-0-0-1", "xrd04:Gi0-0-0-0"]
+
+    - endpoints: ["xrd04:Gi0-0-0-1", "xrd07:Gi0-0-0-1"]
+
+    - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
+    - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
+
+    - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-2"]

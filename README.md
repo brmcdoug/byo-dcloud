@@ -17,9 +17,9 @@ Table of Contents
 A brief PPT deck
 
 ## Why SRv6? 
-    ### Customer example/use case
-	### Bell Canada
-	### AI backend (or FE)
+* Customer example/use case
+* Bell Canada
+* AI backend (or FE)
 
 Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
@@ -58,11 +58,99 @@ dcloud@server:~$ sudo clab version
  rel. notes: https://containerlab.dev/rn/0.60/
 dcloud@server:~$
 ```
+2. Optional: Add your user to the docker group so you don't have to use sudo to run containerlab commands.
+   https://docs.docker.com/engine/install/linux-postinstall/
 
+```
+sudo usermod -aG docker $USER
+```
 
+exit and ssh/login again to refresh your group memberships. Then test docker commands without sudo:
 
+```
+docker ps
+```
+Example output:
+```
+dcloud@server:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+dcloud@server:~$
+```
 
 ## XRd image
+
+1. Acquire XRd image...for the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
+
+```
+wget -O xrd-control-plane-container-x86.24.2.2.tgz -L https://cisco.box.com/shared/static/8ca2aa6cei6np3w04aan4ga1k7d58506
+```
+
+This takes a few minutes. Back to the PPT.
+
+2. Untar the image:
+
+```
+tar -xvf xrd-control-plane-container-x86.24.2.2.tgz
+```
+example output:
+```
+dcloud@server:~$ tar -xvf xrd-control-plane-container-x86.24.2.2.tgz 
+./
+./IOS-XR-SW-XRd.crt
+./cisco_x509_verify_release.py3
+./cisco_x509_verify_release.py3.README
+./cisco_x509_verify_release.py3.signature
+./xrd-control-plane-container-x64.dockerv1.tgz
+./xrd-control-plane-container-x64.dockerv1.tgz.signature
+dcloud@server:~$
+```
+
+3. Docker load the image:
+
+```
+docker load -i xrd-control-plane-container-x64.dockerv1.tgz 
+```
+
+Example output:
+```
+dcloud@server:~$ docker load -i xrd-control-plane-container-x64.dockerv1.tgz 
+7eda0ae02719: Loading layer [==================================================>]  1.315GB/1.315GB
+Loaded image: ios-xr/xrd-control-plane:24.2.2
+dcloud@server:~$ 
+```
+
+4. Verify the image is available:
+
+```
+docker images
+```
+
+Example output:
+```
+dcloud@server:~$ docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+ios-xr/xrd-control-plane   24.2.2    a931f15c0a0d   2 months ago   1.28GB
+dcloud@server:~$ 
+```
+
+5. Next we'll increase kernel pid parameter:
+
+```
+sudo sysctl -w kernel.pid_max=1048576
+```
+
+Setting the parameter via CLI is only temporary. To make the change permanent, add the following line to /etc/sysctl.conf:
+
+```
+kernel.pid_max=1048576
+```
+Then issue the following command to apply the change:
+
+```
+sudo sysctl -p
+```
+
+
 ## topology yaml
 ## srv6 config
 ## launch topology
