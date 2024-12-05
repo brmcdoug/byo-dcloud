@@ -1138,7 +1138,6 @@ PLATFORM_CHECKS_MAP: Mapping[str, List[Check]] = {
 }
 EXTRA_CHECKS_MAP: Mapping[str, List[Check]] = {
     "docker": DOCKER_CHECKS,
-    "xr-compose": XR_COMPOSE_CHECKS,
 }
 
 # -------------------------------------------------------------------------------
