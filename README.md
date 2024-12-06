@@ -12,6 +12,8 @@ Table of Contents
   - [Containerlab Topology Definition](#containerlab-topology-definition)
   - [ssh to XRd Routers](#ssh-to-xrd-routers)
   - [Run Some Pings](#run-some-pings)
+    - [SRv6 L3VPN Reachability](#srv6-l3vpn-reachability)
+    - [SRv6 TE Policies](#srv6-te-policies)
   - [Additional Resources](#additional-resources)
   - [Appendix](#appendix)
 
@@ -355,6 +357,8 @@ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
 docker exec -it clab-topo-carrots01 ping 10.107.2.1 -i .3 -c 10
 ```
 
+### SRv6 L3VPN Reachability
+
 The tcpdump should show the ICMP traffic captured over the SRv6 network; something like:
 ```
 dcloud@server:~$ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-1
@@ -384,6 +388,7 @@ listening on Gi0-0-0-0, link-type EN10MB (Ethernet), capture size 262144 bytes
 04:11:27.359603 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 3, length 64
 ```
 
+### SRv6 TE Policies
 xrd01 has a pair of SRv6 TE policies for carrots routes 40.0.0.0/24 and 50.0.0.0/24
 
 Run pings from carrots01 to the 40.0.0.1 and 50.0.0.1 addresses and see the SRv6 uSID encapsualtions in your tcpdump:
