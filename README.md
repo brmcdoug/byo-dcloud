@@ -101,7 +101,7 @@ dcloud@server:~$
 
 ## XRd image
 
-1. Acquire XRd image...for the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
+1. Acquire an XRd image...normally you'd download the image from CCO (and then upload it to your VM), butfor the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
 
 ```
 wget -O xrd-control-plane-container-x86.24.2.2.tgz -L https://cisco.box.com/shared/static/8ca2aa6cei6np3w04aan4ga1k7d58506
