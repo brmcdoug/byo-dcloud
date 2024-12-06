@@ -10,7 +10,7 @@ Table of Contents
   - [Install Containerlab](#install-containerlab)
   - [XRd Docker Image](#xrd-docker-image)
   - [Containerlab Topology Definition](#containerlab-topology-definition)
-  - [Accessing routers](#accessing-routers)
+  - [ssh to XRd Routers](#ssh-to-xrd-routers)
   - [Appendix](#appendix)
 
 ## SRv6 overview
@@ -208,7 +208,9 @@ Feel free to review the configs in the [xrd-config](xrd-config) folder
 cd byo-dcloud/util
 ./host-check
 ```
-We can ignore the cgroups and Hugepages errors. One interesting portion of the output is the number of XRd CP nodes the script estimates we can run on the VM:
+We can ignore the cgroups and Hugepages errors. 
+
+One interesting portion of the output is the number of XRd control plane nodes the script estimates we can run on the VM:
 
 ```
 xrd checks
@@ -307,7 +309,7 @@ ae29c068b7b9   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ag
 dcloud@server:~/byo-dcloud$ 
 ```
 
-## Accessing routers
+## ssh to XRd Routers
 
 1. Containerlab creates host entries in /etc/hosts for each node in the topology. We can use these to ssh into the routers:
 
@@ -316,7 +318,7 @@ ssh cisco@clab-topo-xrd01
 or
 ssh cisco@172.20.2.201
 ```
-Password is cisco123
+*Password is cisco123*
 
 2. From xrd01 (or really any node), validate the network is working as expected:
 
@@ -325,6 +327,13 @@ show isis database
 show bgp summary
 show segment-routing srv6 sid
 ```
+
+Lots of additional command output examples here:
+https://github.com/jalapeno/SRv6_dCloud_Lab/blob/main/lab_3/validation-cmd-output.md
+
+Lots of additional SRv6 Labs examples here:
+https://github.com/segmentrouting/srv6-labs
+
 
 ## Appendix
 
