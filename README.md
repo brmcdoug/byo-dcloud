@@ -11,6 +11,7 @@ Table of Contents
   - [XRd Docker Image](#xrd-docker-image)
   - [Containerlab Topology Definition](#containerlab-topology-definition)
   - [ssh to XRd Routers](#ssh-to-xrd-routers)
+  - [Run Some Pings](#run-some-pings)
   - [Additional Resources](#additional-resources)
   - [Appendix](#appendix)
 
@@ -328,6 +329,102 @@ show isis database
 show bgp summary
 show segment-routing srv6 sid
 ```
+
+## Run Some Pings
+The carrots linux containers need some ip config, then we'll run pings over the SRv6 network
+
+1. Run this set of commands on the VM to give the containers ip addresses and routes:
+   
+```
+docker exec -it clab-topo-carrots01 ip addr add 10.101.3.1/24 dev eth1
+docker exec -it clab-topo-carrots01 ip route add 10.107.2.0/24 via 10.101.3.2
+docker exec -it clab-topo-carrots01 ip route add 40.0.0.0/24 via 10.101.3.2
+docker exec -it clab-topo-carrots01 ip route add 50.0.0.0/24 via 10.101.3.2
+
+docker exec -it clab-topo-carrots02 ip addr add 10.107.2.1/24 dev eth1
+docker exec -it clab-topo-carrots02 ip route add 10.101.3.0/24 via 10.107.2.2
+```
+
+2. Start a separate ssh session to the VM, and docker exec a tcpdump on xrd01:
+```
+docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
+```
+
+3. Back on the first ssh session, start a ping from carrots01 to carrots02:
+```
+docker exec -it clab-topo-carrots01 ping 10.107.2.1 -i .3 -c 10
+```
+
+The tcpdump should show the ICMP traffic captured over the SRv6 network; something like:
+```
+dcloud@server:~$ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-1
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on Gi0-0-0-1, link-type EN10MB (Ethernet), capture size 262144 bytes
+04:09:55.381957 IS-IS, p2p IIH, src-id 0000.0000.0001, length 1497
+04:09:56.179006 IP6 fc00:0:1::1 > fc00:0:7:e005::: IP 10.101.3.1 > 10.107.2.1: ICMP echo request, id 58, seq 0, length 64
+04:09:56.479012 IP6 fc00:0:1::1 > fc00:0:7:e005::: IP 10.101.3.1 > 10.107.2.1: ICMP echo request, id 58, seq 1, length 64
+04:09:56.779201 IP6 fc00:0:1::1 > fc00:0:7:e005::: IP 10.101.3.1 > 10.107.2.1: ICMP echo request, id 58, seq 2, length 64
+04:09:57.079676 IP6 fc00:0:1::1 > fc00:0:7:e005::: IP 10.101.3.1 > 10.107.2.1: ICMP echo request, id 58, seq 3, length 64
+```
+
+If you don't see any output, try switching the tcpdump to -ni Gi0-0-0-1
+```
+docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-1
+```
+
+Outbound traffic and return traffic may take separate paths through the network
+```
+dcloud@server:~$ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on Gi0-0-0-0, link-type EN10MB (Ethernet), capture size 262144 bytes
+04:11:25.293742 IS-IS, p2p IIH, src-id 0000.0000.0002, length 1497
+04:11:26.459121 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 0, length 64
+04:11:26.759005 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 1, length 64
+04:11:27.059023 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 2, length 64
+04:11:27.359603 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 3, length 64
+```
+
+xrd01 has a pair of SRv6 TE policies for carrots routes 40.0.0.0/24 and 50.0.0.0/24
+
+Run pings from carrots01 to the 40.0.0.1 and 50.0.0.1 addresses and see the SRv6 uSID encapsualtions in your tcpdump:
+```
+docker exec -it clab-topo-carrots01 ping 40.0.0.1 -i .3 -c 10
+docker exec -it clab-topo-carrots01 ping 50.0.0.1 -i .3 -c 10
+```
+
+tcpdump:
+```
+docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
+```
+```
+docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-1
+```
+
+Example output:
+```
+dcloud@server:~$ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on Gi0-0-0-0, link-type EN10MB (Ethernet), capture size 262144 bytes
+04:17:13.139129 IS-IS, p2p IIH, src-id 0000.0000.0001, length 1497
+04:17:13.300334 IS-IS, p2p IIH, src-id 0000.0000.0002, length 1497
+04:17:13.824614 IP6 fc00:0:1::1 > fc00:0:2:3:7:e005::: IP 10.101.3.1 > 40.0.0.1: ICMP echo request, id 106, seq 0, length 64
+04:17:14.124553 IP6 fc00:0:1::1 > fc00:0:2:3:7:e005::: IP 10.101.3.1 > 40.0.0.1: ICMP echo request, id 106, seq 1, length 64
+04:17:14.424780 IP6 fc00:0:1::1 > fc00:0:2:3:7:e005::: IP 10.101.3.1 > 40.0.0.1: ICMP echo request, id 106, seq 2, length 64
+```
+
+And:
+```
+dcloud@server:~$ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-1
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on Gi0-0-0-1, link-type EN10MB (Ethernet), capture size 262144 bytes
+04:17:36.472404 IS-IS, p2p IIH, src-id 0000.0000.0005, length 1497
+04:17:37.704762 IP6 fc00:0:1::1 > fc00:0:5:7:e005::: IP 10.101.3.1 > 50.0.0.1: ICMP echo request, id 124, seq 0, length 64
+04:17:37.708602 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 50.0.0.1 > 10.101.3.1: ICMP echo reply, id 124, seq 0, length 64
+04:17:38.005303 IP6 fc00:0:1::1 > fc00:0:5:7:e005::: IP 10.101.3.1 > 50.0.0.1: ICMP echo request, id 124, seq 1, length 64
+04:17:38.009543 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 50.0.0.1 > 10.101.3.1: ICMP echo reply, id 124, seq 1, length 64
+04:17:38.305255 IP6 fc00:0:1::1 > fc00:0:5:7:e005::: IP 10.101.3.1 > 50.0.0.1: ICMP echo request, id 124, seq 2, length 64
+```
+
 
 ## Additional Resources
 
