@@ -332,9 +332,11 @@ show segment-routing srv6 sid
 ## Additional Resources
 
 Lots of additional command output examples here:
+
 https://github.com/jalapeno/SRv6_dCloud_Lab/blob/main/lab_3/validation-cmd-output.md
 
 Lots of additional SRv6 Labs examples here:
+
 https://github.com/segmentrouting/srv6-labs
 
 
