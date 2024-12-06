@@ -7,7 +7,6 @@ Table of Contents
   - [Why SRv6?](#why-srv6)
   - [dCloud Topology Builder and Launch dCloud Instance](#dcloud-topology-builder-and-launch-dcloud-instance)
   - [ssh to the dCloud VM](#ssh-to-the-dcloud-vm)
-      - [Password is C1sco12345](#password-is-c1sco12345)
   - [Install Containerlab](#install-containerlab)
   - [Acquire an XRd Image](#acquire-an-xrd-image)
   - [Containerlab Topology Definition](#containerlab-topology-definition)
@@ -37,7 +36,7 @@ Once you've completed the topology builder/launch steps we'll pick up here
 ```
 ssh dcloud@198.18.133.100
 ```
-#### Password is C1sco12345
+*Password is C1sco12345*
 
 1.	Optional - change hostname and your password to something easier to type:
 
