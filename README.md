@@ -39,7 +39,7 @@ ssh dcloud@198.18.133.100
 ```
 #### Password is C1sco12345
 
-1.	Optional: change hostname and your password to something easier to type:
+1.	Optional - change hostname and your password to something easier to type:
 
 •	vi or nano /etc/hostname and /etc/hosts
 
@@ -47,20 +47,24 @@ ssh dcloud@198.18.133.100
 
 ## Install Containerlab
 
-We’ll use the open-source tool Containerlab to build/deploy our XRd network:
+We’ll use the open-source tool Containerlab to build/deploy our XRd network
+
 Containerlab homepage: https://containerlab.dev/
 
 1. Link to Containerlab install instructions:  https://containerlab.dev/install/
 
-2. Scroll down to Quick Setup, copy the curl/setupcommand and paste it into your ssh session:
+2. Scroll down to Quick Setup, copy the curl/setup command and paste it into your ssh session:
 ```
 curl -sL https://containerlab.dev/setup | sudo -E bash -s "all"
 ```
 
-The installation script will check for dependencies and install packages such as Docker and containerd. 
+The installation script will check for dependencies and install packages such as Docker and containerd in addition to containerlab. 
 
-Once the script completes run “sudo clab version”. Example:
-
+Once the script completes run 
+```
+sudo clab version
+```
+Example output:
 ```
 dcloud@server:~$ sudo clab version
   ____ ___  _   _ _____  _    ___ _   _ _____ ____  _       _     
