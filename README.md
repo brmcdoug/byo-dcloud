@@ -11,6 +11,7 @@ Table of Contents
   - [XRd Docker Image](#xrd-docker-image)
   - [Containerlab Topology Definition](#containerlab-topology-definition)
   - [ssh to XRd Routers](#ssh-to-xrd-routers)
+  - [Additional Resources](#additional-resources)
   - [Appendix](#appendix)
 
 ## SRv6 overview
@@ -327,6 +328,8 @@ show isis database
 show bgp summary
 show segment-routing srv6 sid
 ```
+
+## Additional Resources
 
 Lots of additional command output examples here:
 https://github.com/jalapeno/SRv6_dCloud_Lab/blob/main/lab_3/validation-cmd-output.md
