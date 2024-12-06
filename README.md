@@ -7,6 +7,8 @@ Table of Contents
   - [Why SRv6?](#why-srv6)
   - [dCloud topo builder](#dcloud-topo-builder)
   - [launch dcloud instance](#launch-dcloud-instance)
+  - [ssh to dcloud VM](#ssh-to-dcloud-vm)
+      - [Password is C1sco12345](#password-is-c1sco12345)
   - [Install Containerlab](#install-containerlab)
   - [XRd image](#xrd-image)
   - [topology yaml](#topology-yaml)
@@ -28,20 +30,34 @@ https://tbv3-ui.ciscodcloud.com/
 
 
 ## launch dcloud instance
+Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
+
+## ssh to dcloud VM
+
+```
+ssh dcloud@198.18.133.100
+```
+#### Password is C1sco12345
+
+1.	Optional: change hostname and your password to something easier to type:
+•	vi or nano /etc/hostname and /etc/hosts
+•	passwd command
+
 ## Install Containerlab
 
-Containerlab home page
-https://containerlab.dev/
+We’ll use the open-source tool Containerlab to build/deploy our XRd network:
+Containerlab homepage: https://containerlab.dev/
 
-Installation link
-https://containerlab.dev/install/
+1. Link to Containerlab install instructions:  https://containerlab.dev/install/
 
-1. Scroll down to Quick Setup, copy the curl/setupcommand and paste it into your ssh session:
+2. Scroll down to Quick Setup, copy the curl/setupcommand and paste it into your ssh session:
 ```
 curl -sL https://containerlab.dev/setup | sudo -E bash -s "all"
 ```
 
-The installation script will check for dependencies and install packages such as Docker and containerd. Once the script completes run “sudo clab version”. Example:
+The installation script will check for dependencies and install packages such as Docker and containerd. 
+
+Once the script completes run “sudo clab version”. Example:
 
 ```
 dcloud@server:~$ sudo clab version
