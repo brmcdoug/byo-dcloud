@@ -5,12 +5,12 @@ Table of Contents
 - [byo-dcloud](#byo-dcloud)
   - [SRv6 overview](#srv6-overview)
   - [Why SRv6?](#why-srv6)
-  - [dCloud topo builder and launch dCloud instance](#dcloud-topo-builder-and-launch-dcloud-instance)
-  - [ssh to dcloud VM](#ssh-to-dcloud-vm)
+  - [dCloud Topology Builder and Launch dCloud Instance](#dcloud-topology-builder-and-launch-dcloud-instance)
+  - [ssh to the dCloud VM](#ssh-to-the-dcloud-vm)
       - [Password is C1sco12345](#password-is-c1sco12345)
   - [Install Containerlab](#install-containerlab)
-  - [XRd image](#xrd-image)
-  - [topology yaml](#topology-yaml)
+  - [Acquire an XRd Image](#acquire-an-xrd-image)
+  - [Containerlab Topology Definition](#containerlab-topology-definition)
   - [Accessing routers](#accessing-routers)
   - [Appendix](#appendix)
 
@@ -23,7 +23,7 @@ A brief PPT deck
 * AI backend (or FE)
 
 
-## dCloud topo builder and launch dCloud instance
+## dCloud Topology Builder and Launch dCloud Instance
 
 Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
@@ -32,7 +32,7 @@ https://tbv3-ui.ciscodcloud.com/
 
 Once you've completed the topology builder/launch steps we'll pick up here
 
-## ssh to dcloud VM
+## ssh to the dCloud VM
 
 ```
 ssh dcloud@198.18.133.100
@@ -99,7 +99,7 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 dcloud@server:~$
 ```
 
-## XRd image
+## Acquire an XRd Image
 
 1. Acquire an XRd image...normally you'd download the image from CCO (and then upload it to your VM), butfor the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
 
@@ -187,7 +187,7 @@ kernel.pid_max = 1048576
 dcloud@server:~/byo-dcloud$
 ```
 
-## topology yaml
+## Containerlab Topology Definition
 Containerlab uses a yaml file to define the topology, and it is enormously flexible.
 My today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
 
