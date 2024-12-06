@@ -5,8 +5,7 @@ Table of Contents
 - [byo-dcloud](#byo-dcloud)
   - [SRv6 overview](#srv6-overview)
   - [Why SRv6?](#why-srv6)
-  - [dCloud topo builder](#dcloud-topo-builder)
-  - [launch dcloud instance](#launch-dcloud-instance)
+  - [dCloud topo builder and launch dCloud instance](#dcloud-topo-builder-and-launch-dcloud-instance)
   - [ssh to dcloud VM](#ssh-to-dcloud-vm)
       - [Password is C1sco12345](#password-is-c1sco12345)
   - [Install Containerlab](#install-containerlab)
@@ -23,14 +22,15 @@ A brief PPT deck
 * Bell Canada
 * AI backend (or FE)
 
+
+## dCloud topo builder and launch dCloud instance
+
 Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
-## dCloud topo builder
+Topology builder link:
 https://tbv3-ui.ciscodcloud.com/
 
-
-## launch dcloud instance
-Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
+Once you've completed the topology builder/launch steps we'll pick up here
 
 ## ssh to dcloud VM
 
@@ -40,8 +40,10 @@ ssh dcloud@198.18.133.100
 #### Password is C1sco12345
 
 1.	Optional: change hostname and your password to something easier to type:
+
 •	vi or nano /etc/hostname and /etc/hosts
-•	passwd command
+
+•	Run the passwd command to change the pw
 
 ## Install Containerlab
 
