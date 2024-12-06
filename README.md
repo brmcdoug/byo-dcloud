@@ -8,7 +8,7 @@ Table of Contents
   - [dCloud Topology Builder and Launch dCloud Instance](#dcloud-topology-builder-and-launch-dcloud-instance)
   - [ssh to the dCloud VM](#ssh-to-the-dcloud-vm)
   - [Install Containerlab](#install-containerlab)
-  - [Acquire an XRd Image](#acquire-an-xrd-image)
+  - [XRd Docker Image](#xrd-docker-image)
   - [Containerlab Topology Definition](#containerlab-topology-definition)
   - [Accessing routers](#accessing-routers)
   - [Appendix](#appendix)
@@ -98,15 +98,15 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 dcloud@server:~$
 ```
 
-## Acquire an XRd Image
+## XRd Docker Image
 
-1. Acquire an XRd image...normally you'd download the image from CCO (and then upload it to your VM), butfor the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
+1. Acquire an XRd image...normally you'd download the image from CCO (and then upload it to your VM), but for the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
 
 ```
 wget -O xrd-control-plane-container-x86.24.2.2.tgz -L https://cisco.box.com/shared/static/8ca2aa6cei6np3w04aan4ga1k7d58506
 ```
 
-This takes a few minutes. Back to the PPT.
+This may take a few minutes
 
 2. Untar the image:
 
@@ -188,7 +188,9 @@ dcloud@server:~/byo-dcloud$
 
 ## Containerlab Topology Definition
 Containerlab uses a yaml file to define the topology, and it is enormously flexible.
-My today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
+For today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
+
+Note: the topology also includes a pair of Alpine linux containers (*carrots01 and carrots02*) that are users of the network
 
 In the yaml file, we define the topology name, mgt network, nodes, images, path to config file, and links in the network.
 
