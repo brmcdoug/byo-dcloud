@@ -3,20 +3,23 @@
 Table of Contents
 
 - [byo-dcloud](#byo-dcloud)
-  - [dCloud Topology Builder and Launch dCloud Instance](#dcloud-topology-builder-and-launch-dcloud-instance)
-  - [ssh to the dCloud VM](#ssh-to-the-dcloud-vm)
-  - [Install Containerlab](#install-containerlab)
-  - [XRd Docker Image](#xrd-docker-image)
-  - [Containerlab Topology Definition](#containerlab-topology-definition)
-  - [ssh to XRd Routers](#ssh-to-xrd-routers)
-  - [Run Some Pings](#run-some-pings)
+  - [Part 1: dCloud Topology Builder and Launch dCloud Instance](#part-1-dcloud-topology-builder-and-launch-dcloud-instance)
+  - [Part 2: Containerlab and IOS XRd](#part-2-containerlab-and-ios-xrd)
+    - [Connecting to your session](#connecting-to-your-session)
+    - [Install Docker](#install-docker)
+    - [Install Containerlab](#install-containerlab)
+    - [XRd Docker Image](#xrd-docker-image)
+    - [Containerlab Topology Definition](#containerlab-topology-definition)
+    - [ssh to XRd Routers](#ssh-to-xrd-routers)
+    - [Run Some Pings](#run-some-pings)
     - [SRv6 L3VPN Reachability](#srv6-l3vpn-reachability)
     - [SRv6 TE Policies](#srv6-te-policies)
-  - [Additional Resources](#additional-resources)
-  - [Appendix](#appendix)
+    - [Additional Resources](#additional-resources)
+    - [Appendix](#appendix)
+  - [Part 3: VRNetLab and NXOS](#part-3-vrnetlab-and-nxos)
 
 
-## dCloud Topology Builder and Launch dCloud Instance
+## Part 1: dCloud Topology Builder and Launch dCloud Instance
 
 Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
@@ -25,7 +28,13 @@ https://tbv3-ui.ciscodcloud.com/
 
 Once you've completed the topology builder/launch steps we'll pick up here
 
-## ssh to the dCloud VM
+## Part 2: Containerlab and IOS XRd
+
+### Connecting to your session
+
+1.  Connect to your dCloud session with AnyConnect VPN
+
+2.  ssh to the Ubuntu VM
 
 ```
 ssh dcloud@198.18.133.100
@@ -38,7 +47,22 @@ ssh dcloud@198.18.133.100
 
 •	Run the passwd command to change the pw
 
-## Install Containerlab
+•	Run the adduser command to add user 'cisco' with password 'cisco123'
+
+
+### Install Docker
+
+Instructions:
+https://docs.docker.com/engine/install/ubuntu/
+
+Optional: Add your user to the docker group so you don't have to use sudo to run containerlab commands.
+   https://docs.docker.com/engine/install/linux-postinstall/
+
+```
+sudo usermod -aG docker $USER
+```
+
+### Install Containerlab
 
 We’ll use the open-source tool Containerlab to build/deploy our XRd network
 
@@ -73,12 +97,6 @@ dcloud@server:~$ sudo clab version
  rel. notes: https://containerlab.dev/rn/0.60/
 dcloud@server:~$
 ```
-2. Optional: Add your user to the docker group so you don't have to use sudo to run containerlab commands.
-   https://docs.docker.com/engine/install/linux-postinstall/
-
-```
-sudo usermod -aG docker $USER
-```
 
 exit and ssh/login again to refresh your group memberships. Then test docker commands without sudo:
 
@@ -92,13 +110,9 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 dcloud@server:~$
 ```
 
-## XRd Docker Image
+### XRd Docker Image
 
-1. Acquire an XRd image...normally you'd download the image from CCO (and then upload it to your VM), but for the sake of time, we'll use an XRd image posted to Box. From your ssh session, run:
-
-```
-wget -O xrd-control-plane-container-x86.24.2.2.tgz -L https://cisco.box.com/shared/static/8ca2aa6cei6np3w04aan4ga1k7d58506
-```
+1. Acquire an XRd image from CCO downloads 
 
 This may take a few minutes
 
@@ -180,7 +194,7 @@ kernel.pid_max = 1048576
 dcloud@server:~/byo-dcloud$
 ```
 
-## Containerlab Topology Definition
+### Containerlab Topology Definition
 Containerlab uses a yaml file to define the topology, and it is enormously flexible.
 For today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
 
@@ -303,7 +317,7 @@ ae29c068b7b9   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ag
 dcloud@server:~/byo-dcloud$ 
 ```
 
-## ssh to XRd Routers
+### ssh to XRd Routers
 
 1. Containerlab creates host entries in /etc/hosts for each node in the topology. We can use these to ssh into the routers:
 
@@ -322,7 +336,7 @@ show bgp summary
 show segment-routing srv6 sid
 ```
 
-## Run Some Pings
+### Run Some Pings
 The carrots linux containers need some ip config, then we'll run pings over the SRv6 network
 
 1. Run this set of commands on the VM to give the containers ip addresses and routes:
@@ -420,8 +434,7 @@ listening on Gi0-0-0-1, link-type EN10MB (Ethernet), capture size 262144 bytes
 04:17:38.305255 IP6 fc00:0:1::1 > fc00:0:5:7:e005::: IP 10.101.3.1 > 50.0.0.1: ICMP echo request, id 124, seq 2, length 64
 ```
 
-
-## Additional Resources
+### Additional Resources
 
 Lots of additional command output examples here:
 
@@ -432,7 +445,7 @@ Lots of additional SRv6 Labs examples here:
 https://github.com/segmentrouting/srv6-labs
 
 
-## Appendix
+### Appendix
 
 Containerlab commands:
 ```
@@ -441,3 +454,5 @@ sudo clab deploy -t <topology yaml file>
 sudo clab destroy -t <topology yaml file>
 ```
 
+## Part 3: VRNetLab and NXOS
+`*coming soon*`
