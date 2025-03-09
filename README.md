@@ -4,6 +4,8 @@ Table of Contents
 
 - [byo-dcloud](#byo-dcloud)
   - [Part 1: dCloud Topology Builder and Launch dCloud Instance](#part-1-dcloud-topology-builder-and-launch-dcloud-instance)
+    - [Topology Builder Screenshots](#topology-builder-screenshots)
+    - [Topology builder link:](#topology-builder-link)
   - [Part 2: Containerlab and IOS XRd](#part-2-containerlab-and-ios-xrd)
     - [Connecting to your session](#connecting-to-your-session)
     - [Install Docker](#install-docker)
@@ -21,9 +23,10 @@ Table of Contents
 
 ## Part 1: dCloud Topology Builder and Launch dCloud Instance
 
-Link to [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
+### Topology Builder Screenshots
+[Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
-Topology builder link:
+### Topology builder link:
 https://tbv3-ui.ciscodcloud.com/
 
 Once you've completed the topology builder/launch steps we'll pick up here
