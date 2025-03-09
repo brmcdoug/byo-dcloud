@@ -3,8 +3,6 @@
 Table of Contents
 
 - [byo-dcloud](#byo-dcloud)
-  - [SRv6 overview](#srv6-overview)
-  - [Why SRv6?](#why-srv6)
   - [dCloud Topology Builder and Launch dCloud Instance](#dcloud-topology-builder-and-launch-dcloud-instance)
   - [ssh to the dCloud VM](#ssh-to-the-dcloud-vm)
   - [Install Containerlab](#install-containerlab)
@@ -16,14 +14,6 @@ Table of Contents
     - [SRv6 TE Policies](#srv6-te-policies)
   - [Additional Resources](#additional-resources)
   - [Appendix](#appendix)
-
-## SRv6 overview
-A brief PPT deck
-
-## Why SRv6? 
-* Customer example/use case
-* Bell Canada
-* AI backend (or FE)
 
 
 ## dCloud Topology Builder and Launch dCloud Instance
