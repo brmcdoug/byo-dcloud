@@ -5,7 +5,7 @@ Table of Contents
 - [byo-dcloud](#byo-dcloud)
   - [Part 1: dCloud Topology Builder and Launch dCloud Instance](#part-1-dcloud-topology-builder-and-launch-dcloud-instance)
     - [Topology Builder Screenshots](#topology-builder-screenshots)
-    - [Topology Builder Link](#topology-builder-link)
+    - [Link to dCloud Topology Builder:](#link-to-dcloud-topology-builder)
   - [Part 2: Containerlab and IOS XRd](#part-2-containerlab-and-ios-xrd)
     - [Connecting to your session](#connecting-to-your-session)
     - [Install Docker](#install-docker)
@@ -26,7 +26,7 @@ Table of Contents
 ### Topology Builder Screenshots
 [Lab Guide](Lab-Guide-for-BYO-dCloud-Lab.pdf)
 
-### Topology Builder Link
+### Link to dCloud Topology Builder:
 https://tbv3-ui.ciscodcloud.com/
 
 Once you've completed the topology builder/launch steps we'll pick up here
@@ -46,11 +46,11 @@ ssh dcloud@198.18.133.100
 
 1.	Optional - change hostname and your password to something easier to type:
 
-•	vi or nano /etc/hostname and /etc/hosts
+  •	vi or nano /etc/hostname and /etc/hosts or 'sudo hostnamectl set-hostname <new hostname>'
 
-•	Run the passwd command to change the pw
+  •	Run the passwd command to change the pw
 
-•	Run the adduser command to add user 'cisco' with password 'cisco123'
+  •	Run the adduser command to add user 'cisco' with password 'cisco123'
 
 
 ### Install Docker
@@ -65,9 +65,11 @@ Optional: Add your user to the docker group so you don't have to use sudo to run
 sudo usermod -aG docker $USER
 ```
 
+  * Logout and log back in for the change to take effect
+
 ### Install Containerlab
 
-We’ll use the open-source tool Containerlab to build/deploy our XRd network
+We'll use the open-source tool Containerlab to build/deploy our XRd network
 
 Containerlab homepage: https://containerlab.dev/
 
@@ -78,9 +80,9 @@ Containerlab homepage: https://containerlab.dev/
 curl -sL https://containerlab.dev/setup | sudo -E bash -s "all"
 ```
 
-The installation script will check for dependencies and install packages such as Docker and containerd in addition to containerlab. 
+The installation script will check for dependencies and install packages such as Docker Compose and containerd in addition to containerlab. 
 
-Once the script completes run 
+Once the script completes run this command to validate the installation: 
 ```
 sudo clab version
 ```
@@ -112,6 +114,8 @@ dcloud@server:~$ docker ps
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 dcloud@server:~$
 ```
+
+If you wish to skip the XRd section and go straight to [Part 3: VRNetLab and nxos9000v](#part-3-vrnetlab-and-nxos)
 
 ### XRd Docker Image
 
@@ -151,7 +155,7 @@ Loaded image: ios-xr/xrd-control-plane:24.2.2
 dcloud@server:~$ 
 ```
 
-4. Verify the image is available:
+4. Verify the image is available for use:
 
 ```
 docker images
@@ -168,6 +172,7 @@ dcloud@server:~$
 5. XRd requires us to tune a couple sysctl parameters. Use either vi or nano to edit /etc/sysctl.conf:
 
 ```
+sudo modprobe br_netfilter
 sudo nano /etc/sysctl.conf
 ```
 
