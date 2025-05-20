@@ -18,31 +18,31 @@ topology:
 
     r00:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_nxos9000v:10.5.2.F
+      image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.100
       startup-config: nx-config/r00.cfg
 
     r01:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_nxos9000v:10.5.2.F
+      image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.101
       startup-config: nx-config/r01.cfg
 
     r02:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_nxos9000v:10.5.2.F
+      image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.102
       startup-config: nx-config/r02.cfg
 
     r03:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_nxos9000v:10.5.2.F
+      image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.103
       startup-config: nx-config/r03.cfg
 
     r04:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_nxos9000v:10.5.2.F
+      image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.104
       startup-config: nx-config/r04.cfg
 
