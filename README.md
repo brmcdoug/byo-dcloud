@@ -10,15 +10,16 @@ Table of Contents
     - [Connecting to your session](#connecting-to-your-session)
     - [Install Docker](#install-docker)
     - [Install Containerlab](#install-containerlab)
-    - [XRd Docker Image](#xrd-docker-image)
     - [Containerlab Topology Definition](#containerlab-topology-definition)
-    - [ssh to XRd Routers](#ssh-to-xrd-routers)
-    - [Run Some Pings](#run-some-pings)
-    - [SRv6 L3VPN Reachability](#srv6-l3vpn-reachability)
-    - [SRv6 TE Policies](#srv6-te-policies)
-    - [Additional Resources](#additional-resources)
-    - [Appendix](#appendix)
+    - [Deploy a Containerlab Topology](#deploy-a-containerlab-topology)
+    - [XRd Topology](#xrd-topology)
+      - [ssh to XRd Routers](#ssh-to-xrd-routers)
+      - [Run Some Pings](#run-some-pings)
+      - [SRv6 L3VPN Reachability](#srv6-l3vpn-reachability)
+      - [SRv6 TE Policies](#srv6-te-policies)
+      - [Additional XRd and SRv6 Lab Resources](#additional-xrd-and-srv6-lab-resources)
   - [Part 3: VRNetLab and NXOS](#part-3-vrnetlab-and-nxos)
+  - [Appendix](#appendix)
 
 
 ## Part 1: dCloud Topology Builder and Launch dCloud Instance
@@ -29,7 +30,7 @@ Table of Contents
 ### Link to dCloud Topology Builder:
 https://tbv3-ui.ciscodcloud.com/
 
-Once you've completed the topology builder/launch steps we'll pick up here
+In the instructions Doc/PDF the VM name is shown as `byo-dcloud`. Its probably a good practice to rename the VM to something other than the dCloud template name, so for the purposes of these instructions the VM will be referred to as `topology-host` from here on.
 
 ## Part 2: Containerlab and IOS XRd
 
@@ -37,14 +38,14 @@ Once you've completed the topology builder/launch steps we'll pick up here
 
 1.  Connect to your dCloud session with AnyConnect VPN
 
-2.  ssh to the Ubuntu VM
+2.  ssh to the `topology-host` VM
 
 ```
 ssh dcloud@198.18.133.100
 ```
 *Password is C1sco12345*
 
-1.	Optional - change hostname and your password to something easier to type:
+1.	Optional - change Linux hostname and your password to something easier to type:
 
   •	vi or nano /etc/hostname and /etc/hosts or 'sudo hostnamectl set-hostname <new hostname>'
 
@@ -115,9 +116,29 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 dcloud@server:~$
 ```
 
-If you wish to skip the XRd section and go straight to [Part 3: VRNetLab and nxos9000v](#part-3-vrnetlab-and-nxos)
+### Containerlab Topology Definition
+Containerlab uses a yaml file to define the topology, and it is enormously flexible. More info on Clab topology options can be found [Here](https://containerlab.dev/manual/topo-def-file/)
 
-### XRd Docker Image
+In the yaml file, we define the topology name, mgt network, nodes, images, path to config file, and links in the network.
+
+This repository includes a pair of example topologies:
+
+  *  7-node XRd topology: [topology-xrd.yaml](topology-xrd.yaml)
+  *  5-node nx9000v topology: [topology-nx.yaml](topology-nx.yaml)
+
+Note: both topology files include connections for external elements - the XRd topology includes a pair of Alpine linux containers (*carrots01 and carrots02*) connected to the network, and the NX topology includes Linux bridge instances for connecting separate VMs which we might use to simulate servers/hosts attached to the NX nodes.
+
+### Deploy a Containerlab Topology
+
+1. git clone this repo to your VM:
+
+```
+git clone https://github.com/brmcdoug/byo-dcloud.git
+```
+
+If you wish to skip the XRd section and go straight to [Part 3: VRNetLab and Nexus 9000v](#part-3-vrnetlab-and-nxos)
+
+### XRd Topology
 
 1. Acquire an XRd image from CCO downloads 
 
@@ -202,23 +223,9 @@ kernel.pid_max = 1048576
 dcloud@server:~/byo-dcloud$
 ```
 
-### Containerlab Topology Definition
-Containerlab uses a yaml file to define the topology, and it is enormously flexible.
-For today's purposes we'll use the 7-node topology here: [topology.yaml](topology.yaml)
-
-Note: the topology also includes a pair of Alpine linux containers (*carrots01 and carrots02*) that are users of the network
-
-In the yaml file, we define the topology name, mgt network, nodes, images, path to config file, and links in the network.
-
-1. git clone this repo to your VM:
-
-```
-git clone https://github.com/brmcdoug/byo-dcloud.git
-```
-
 Feel free to review the configs in the [xrd-config](xrd-config) folder
 
-2. Before we launch the topology, let's run the host-check script to verify our host will support the topology:
+6. Before we launch the topology, let's run the host-check script to verify our host will support the topology:
 
 ```
 cd byo-dcloud/util
@@ -238,11 +245,11 @@ PASS -- RAM
         Note that any swap that may be available is not included.
 ```
 
-3. Launch the topology:
+7. Launch the topology:
 
 ```
 cd byo-dcloud
-sudo clab deploy -t topology.yaml
+sudo clab deploy -t topology-xrd.yaml
 ```
 
 Example output:
@@ -325,7 +332,7 @@ ae29c068b7b9   ios-xr/xrd-control-plane:24.2.2   "/usr/sbin/init"   2 minutes ag
 dcloud@server:~/byo-dcloud$ 
 ```
 
-### ssh to XRd Routers
+#### ssh to XRd Routers
 
 1. Containerlab creates host entries in /etc/hosts for each node in the topology. We can use these to ssh into the routers:
 
@@ -344,7 +351,7 @@ show bgp summary
 show segment-routing srv6 sid
 ```
 
-### Run Some Pings
+#### Run Some Pings
 The carrots linux containers need some ip config, then we'll run pings over the SRv6 network
 
 1. Run this set of commands on the VM to give the containers ip addresses and routes:
@@ -369,7 +376,7 @@ docker exec -it clab-topo-xrd01 tcpdump -ni Gi0-0-0-0
 docker exec -it clab-topo-carrots01 ping 10.107.2.1 -i .3 -c 10
 ```
 
-### SRv6 L3VPN Reachability
+#### SRv6 L3VPN Reachability
 
 The tcpdump should show the ICMP traffic captured over the SRv6 network; something like:
 ```
@@ -400,7 +407,7 @@ listening on Gi0-0-0-0, link-type EN10MB (Ethernet), capture size 262144 bytes
 04:11:27.359603 IP6 fc00:0:7::1 > fc00:0:1:e005::: IP 10.107.2.1 > 10.101.3.1: ICMP echo reply, id 64, seq 3, length 64
 ```
 
-### SRv6 TE Policies
+#### SRv6 TE Policies
 xrd01 has a pair of SRv6 TE policies for carrots routes 40.0.0.0/24 and 50.0.0.0/24
 
 Run pings from carrots01 to the 40.0.0.1 and 50.0.0.1 addresses and see the SRv6 uSID encapsualtions in your tcpdump:
@@ -442,7 +449,7 @@ listening on Gi0-0-0-1, link-type EN10MB (Ethernet), capture size 262144 bytes
 04:17:38.305255 IP6 fc00:0:1::1 > fc00:0:5:7:e005::: IP 10.101.3.1 > 50.0.0.1: ICMP echo request, id 124, seq 2, length 64
 ```
 
-### Additional Resources
+#### Additional XRd and SRv6 Lab Resources
 
 Lots of additional command output examples here:
 
@@ -453,7 +460,26 @@ Lots of additional SRv6 Labs examples here:
 https://github.com/segmentrouting/srv6-labs
 
 
-### Appendix
+
+## Part 3: VRNetLab and NXOS
+
+In Part 1 we used dCloud Topology Builder to setup and launched a large Ubuntu VM to act as a flexible `topology-host` node. In Part 2 we installed Docker and the open-source [Containerlab](https://containerlab.dev/) tool on our `topology-host` VM. We also cloned this repo, which has example Clab topologies and configs.
+
+Now in Part 3 we'll deploy a topology using Nexus 9000v. However, first we need to account for the fact that the 9000v is a VM not a container. Fortunately Containerlab has integrated support for **vrnetlab**, which takes a 9000v and essentially converts it to a Qemu VM packaged in a docker container format.
+
+1. Acquire a Nexus 9000v image through CCO download
+2. Install VRNetLab on your `topology-host` VM:
+```
+git clone https://github.com/hellt/vrnetlab.git
+```
+
+The example Nexus 9000v topology is borrowed from another project which used an XRd node as a DCI/GW to external networks. 
+
+Marina Ferreira has constructed another very nice Containerlab/Nexus 9000v lab here, featuring auto-bgp on Nexus and k8s/Cilium:
+https://github.com/marinalf/auto-bgp-lab
+
+
+## Appendix
 
 Containerlab commands:
 ```
@@ -461,6 +487,3 @@ sudo clab -h
 sudo clab deploy -t <topology yaml file>
 sudo clab destroy -t <topology yaml file>
 ```
-
-## Part 3: VRNetLab and NXOS
-`*coming soon*`

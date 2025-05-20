@@ -1,0 +1,79 @@
+#   The topology-nx.yaml launches a small nexus 9000v clos fabric with 
+#   Alpine linux containers attached to simulate hosts
+#
+#                  r00  r01
+#                 /  \ /  \
+#                r02  r03  r04
+#                /     |     \
+#             alp00  alp01  alp02
+
+name: demo
+
+mgmt:
+  network: mgtnet
+  ipv4-subnet: 172.20.1.0/24
+
+topology:
+  nodes:
+
+    r00:
+      kind: cisco_n9kv
+      image: vrnetlab/cisco_nxos9000v:10.5.2
+      mgmt-ipv4: 172.20.1.100
+      startup-config: nx-config/r00.cfg
+
+    r01:
+      kind: cisco_n9kv
+      image: vrnetlab/cisco_nxos9000v:10.5.2
+      mgmt-ipv4: 172.20.1.101
+      startup-config: nx-config/r01.cfg
+
+    r02:
+      kind: cisco_n9kv
+      image: vrnetlab/cisco_nxos9000v:10.5.2
+      mgmt-ipv4: 172.20.1.102
+      startup-config: nx-config/r02.cfg
+
+    r03:
+      kind: cisco_n9kv
+      image: vrnetlab/cisco_nxos9000v:10.5.2
+      mgmt-ipv4: 172.20.1.103
+      startup-config: nx-config/r03.cfg
+
+    r04:
+      kind: cisco_n9kv
+      image: vrnetlab/cisco_nxos9000v:10.5.2
+      mgmt-ipv4: 172.20.1.104
+      startup-config: nx-config/r04.cfg
+
+    alp00:
+      kind: linux
+      image: iejalapeno/alpine:latest
+      mgmt-ipv4: 172.20.1.106
+
+    alp01:
+      kind: linux
+      image: iejalapeno/alpine:latest
+      mgmt-ipv4: 172.20.1.107
+
+    alp02:
+      kind: linux
+      image: iejalapeno/alpine:latest
+      mgmt-ipv4: 172.20.1.108
+
+      
+  links:
+    - endpoints: ["r00:eth1", "r02:eth1"]
+    - endpoints: ["r00:eth2", "r03:eth1"]
+    - endpoints: ["r00:eth3", "r04:eth1"]
+
+    - endpoints: ["r01:eth1", "r02:eth2"]
+    - endpoints: ["r01:eth2", "r03:eth2"]
+    - endpoints: ["r01:eth3", "r04:eth2"]
+    
+    - endpoints: ["r02:eth3", "alp00:eth1"]
+    - endpoints: ["r03:eth3", "alp01:eth1"]
+    - endpoints: ["r03:eth4", "alp02:eth1"]
+
+
+
