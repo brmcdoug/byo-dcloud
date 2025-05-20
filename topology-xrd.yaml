@@ -17,43 +17,43 @@ topology:
   nodes:
     xrd01:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.201
       startup-config: xrd-config/xrd01.cfg
 
     xrd02:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.202
       startup-config: xrd-config/xrd02.cfg
 
     xrd03:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.203
       startup-config: xrd-config/xrd03.cfg
 
     xrd04:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.204
       startup-config: xrd-config/xrd04.cfg
 
     xrd05:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.205
       startup-config: xrd-config/xrd05.cfg
 
     xrd06:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.206
       startup-config: xrd-config/xrd06.cfg
 
     xrd07:
       kind: cisco_xrd
-      image: ios-xr/xrd-control-plane:24.4.1
+      image: ios-xr/xrd-control-plane:25.1.1
       mgmt-ipv4: 172.20.2.207
       startup-config: xrd-config/xrd07.cfg
 

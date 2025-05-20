@@ -20,31 +20,31 @@ topology:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.100
-      startup-config: nx-config/r00.cfg
+      startup-config: nx-config/r00.txt
 
     r01:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.101
-      startup-config: nx-config/r01.cfg
+      startup-config: nx-config/r01.txt
 
     r02:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.102
-      startup-config: nx-config/r02.cfg
+      startup-config: nx-config/r02.txt
 
     r03:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.103
-      startup-config: nx-config/r03.cfg
+      startup-config: nx-config/r03.txt
 
     r04:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
       mgmt-ipv4: 172.20.1.104
-      startup-config: nx-config/r04.cfg
+      startup-config: nx-config/r04.txt
 
     alp00:
       kind: linux
@@ -73,7 +73,4 @@ topology:
     
     - endpoints: ["r02:eth3", "alp00:eth1"]
     - endpoints: ["r03:eth3", "alp01:eth1"]
-    - endpoints: ["r03:eth4", "alp02:eth1"]
-
-
-
+    - endpoints: ["r04:eth3", "alp02:eth1"]

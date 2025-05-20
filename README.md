@@ -6,13 +6,13 @@ Table of Contents
   - [Part 1: dCloud Topology Builder and Launch dCloud Instance](#part-1-dcloud-topology-builder-and-launch-dcloud-instance)
     - [Topology Builder Screenshots](#topology-builder-screenshots)
     - [Link to dCloud Topology Builder:](#link-to-dcloud-topology-builder)
-  - [Part 2: Containerlab and IOS XRd](#part-2-containerlab-and-ios-xrd)
+  - [Part 2: Containerlab](#part-2-containerlab)
     - [Connecting to your session](#connecting-to-your-session)
     - [Install Docker](#install-docker)
     - [Install Containerlab](#install-containerlab)
     - [Containerlab Topology Definition](#containerlab-topology-definition)
     - [Deploy a Containerlab Topology](#deploy-a-containerlab-topology)
-    - [XRd Topology](#xrd-topology)
+    - [Example XRd Topology](#example-xrd-topology)
       - [ssh to XRd Routers](#ssh-to-xrd-routers)
       - [Run Some Pings](#run-some-pings)
       - [SRv6 L3VPN Reachability](#srv6-l3vpn-reachability)
@@ -32,7 +32,7 @@ https://tbv3-ui.ciscodcloud.com/
 
 In the instructions Doc/PDF the VM name is shown as `byo-dcloud`. Its probably a good practice to rename the VM to something other than the dCloud template name, so for the purposes of these instructions the VM will be referred to as `topology-host` from here on.
 
-## Part 2: Containerlab and IOS XRd
+## Part 2: Containerlab 
 
 ### Connecting to your session
 
@@ -138,7 +138,7 @@ git clone https://github.com/brmcdoug/byo-dcloud.git
 
 If you wish to skip the XRd section and go straight to [Part 3: VRNetLab and Nexus 9000v](#part-3-vrnetlab-and-nxos)
 
-### XRd Topology
+### Example XRd Topology
 
 1. Acquire an XRd image from CCO downloads 
 
@@ -467,16 +467,68 @@ In Part 1 we used dCloud Topology Builder to setup and launched a large Ubuntu V
 
 Now in Part 3 we'll deploy a topology using Nexus 9000v. However, first we need to account for the fact that the 9000v is a VM not a container. Fortunately Containerlab has integrated support for **vrnetlab**, which takes a 9000v and essentially converts it to a Qemu VM packaged in a docker container format.
 
-1. Acquire a Nexus 9000v image through CCO download
-2. Install VRNetLab on your `topology-host` VM:
+1. Install VRNetLab on your `topology-host` VM:
 ```
 git clone https://github.com/hellt/vrnetlab.git
 ```
 
-The example Nexus 9000v topology is borrowed from another project which used an XRd node as a DCI/GW to external networks. 
+The example Nexus 9000v topology is a small CLOS fabric with Alpine Linux containers attached to simulate connected hosts.
 
 Marina Ferreira has constructed another very nice Containerlab/Nexus 9000v lab here, featuring auto-bgp on Nexus and k8s/Cilium:
 https://github.com/marinalf/auto-bgp-lab
+
+2. vrnetlab will want to do a 'make build' on the NX VM image, so we'll need to first install the `make` package
+```
+sudo apt install make 
+```
+
+3. Acquire a Nexus 9000v image through CCO download
+4. Move or copy the image file into the `vrnetlab/n9kv` directory. 
+    * Note the re-name of the file as well
+    * Run `make` per the README instructions:
+```
+mv nexus9300v64.10.5.2.F.qcow2 n9kv-10.5.2.F.qcow2
+more README.md 
+```
+```
+make docker-image
+```
+
+Tail-end of expected output:
+```
+ => => naming to docker.io/vrnetlab/cisco_n9kv:10.5.2.F                                                                                         0.0s
+make[1]: Leaving directory '/home/cisco/vrnetlab/n9kv'
+make[1]: Entering directory '/home/cisco/vrnetlab/n9kv'
+--> Cleaning docker build context
+rm -f docker/*.qcow2* docker/*.tgz* docker/*.vmdk* docker/*.iso docker/*.xml docker/*.bin
+rm -f docker/healthcheck.py docker/vrnetlab.py
+make[1]: Leaving directory '/home/cisco/vrnetlab/n9kv'
+```
+
+5. Verify vrnetlab has created the docker image:
+```
+docker images
+```
+
+Expected output:
+```
+cisco@topology-host:~/byo-dcloud$ docker images
+REPOSITORY            TAG        IMAGE ID       CREATED         SIZE
+vrnetlab/cisco_n9kv   10.5.2.F   64c48e0c5fdd   2 minutes ago   2.81GB
+iejalapeno/alpine     latest     0ac33e5f5afa   3 years ago     5.57MB
+```
+
+6. Deploy the Nexus 9000v topology
+```
+sudo clab deploy -t topology-nx.yaml
+```
+
+The Nexus nodes take 6-8 minutes to come up. 
+
+7. ssh to Nexus nodes (pw = admin):
+```
+ssh admin@clab-demo-r00
+```
 
 
 ## Appendix
@@ -485,5 +537,6 @@ Containerlab commands:
 ```
 sudo clab -h
 sudo clab deploy -t <topology yaml file>
-sudo clab destroy -t <topology yaml file>
+sudo clab destroy -t <topology yaml file> 
+sudo clab destroy -t <topology yaml file> -c ## cleanup container files in auto-created 'clab' directory
 ```
