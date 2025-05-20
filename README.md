@@ -19,6 +19,7 @@ Table of Contents
       - [SRv6 TE Policies](#srv6-te-policies)
       - [Additional XRd and SRv6 Lab Resources](#additional-xrd-and-srv6-lab-resources)
   - [Part 3: VRNetLab and NXOS](#part-3-vrnetlab-and-nxos)
+      - [Containerlab UI](#containerlab-ui)
   - [Appendix](#appendix)
 
 
@@ -467,6 +468,8 @@ In Part 1 we used dCloud Topology Builder to setup and launched a large Ubuntu V
 
 Now in Part 3 we'll deploy a topology using Nexus 9000v. However, first we need to account for the fact that the 9000v is a VM not a container. Fortunately Containerlab has integrated support for **vrnetlab**, which takes a 9000v and essentially converts it to a Qemu VM packaged in a docker container format.
 
+Note: the [history.md](history.md) file 
+
 1. Install VRNetLab on your `topology-host` VM:
 ```
 git clone https://github.com/hellt/vrnetlab.git
@@ -530,6 +533,12 @@ The Nexus nodes take 6-8 minutes to come up.
 ssh admin@clab-demo-r00
 ```
 
+8. 
+
+#### Containerlab UI
+```
+sudo clab graph -t topology-nx.yaml 
+```
 
 ## Appendix
 

@@ -15,7 +15,7 @@ mgmt:
 
 topology:
   nodes:
-
+    ### SPINES ###
     r00:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
@@ -28,6 +28,7 @@ topology:
       mgmt-ipv4: 172.20.1.101
       startup-config: nx-config/r01.txt
 
+    ### LEAFS ###
     r02:
       kind: cisco_n9kv
       image: vrnetlab/cisco_n9kv:10.5.2.F
@@ -46,6 +47,7 @@ topology:
       mgmt-ipv4: 172.20.1.104
       startup-config: nx-config/r04.txt
 
+    ### CLIENTS ###
     alp00:
       kind: linux
       image: iejalapeno/alpine:latest
@@ -60,8 +62,7 @@ topology:
       kind: linux
       image: iejalapeno/alpine:latest
       mgmt-ipv4: 172.20.1.108
-
-      
+   
   links:
     - endpoints: ["r00:eth1", "r02:eth1"]
     - endpoints: ["r00:eth2", "r03:eth1"]
