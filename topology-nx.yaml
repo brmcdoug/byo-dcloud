@@ -18,32 +18,32 @@ topology:
     ### SPINES ###
     r00:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_n9kv:10.5.2.F
+      image: vrnetlab/cisco_nxos9000v:10.5.2
       mgmt-ipv4: 172.20.1.100
       startup-config: nx-config/r00.txt
 
     r01:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_n9kv:10.5.2.F
+      image: vrnetlab/cisco_nxos9000v:10.5.2
       mgmt-ipv4: 172.20.1.101
       startup-config: nx-config/r01.txt
 
     ### LEAFS ###
     r02:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_n9kv:10.5.2.F
+      image: vrnetlab/cisco_nxos9000v:10.5.2
       mgmt-ipv4: 172.20.1.102
       startup-config: nx-config/r02.txt
 
     r03:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_n9kv:10.5.2.F
+      image: vrnetlab/cisco_nxos9000v:10.5.2
       mgmt-ipv4: 172.20.1.103
       startup-config: nx-config/r03.txt
 
     r04:
       kind: cisco_n9kv
-      image: vrnetlab/cisco_n9kv:10.5.2.F
+      image: vrnetlab/cisco_nxos9000v:10.5.2
       mgmt-ipv4: 172.20.1.104
       startup-config: nx-config/r04.txt
 
